@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class WalletService {
+public class WalletService { //ok la lt
 
     @Autowired
     private CustomerRepositories customerRepo;
