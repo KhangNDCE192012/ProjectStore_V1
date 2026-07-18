@@ -5,10 +5,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.Customer;
-import webBackEnd.service.*;
-import webBackEnd.successfullyDat.PathCheck;
-import webBackEnd.successfullyDat.SendMailTest;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.service.*;
+import vn.edu.fpt.projectstore.successfullyDat.PathCheck;
+import vn.edu.fpt.projectstore.successfullyDat.SendMailTest;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;

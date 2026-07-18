@@ -3,8 +3,9 @@ package vn.edu.fpt.projectstore.successfullyDat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.service.OrderDetailService;
+import vn.edu.fpt.projectstore.entity.OrderDetail;
+import vn.edu.fpt.projectstore.service.OrderDetailService;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class GetQuantity {
 
     @Autowired
-    private OrderDetailService  orderDetailService;
+    private OrderDetailService orderDetailService;
 
     public int findAllByOrderId(UUID orderId) {
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);

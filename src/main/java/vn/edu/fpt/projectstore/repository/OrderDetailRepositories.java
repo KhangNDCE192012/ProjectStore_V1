@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.OrderDetail;
+import vn.edu.fpt.projectstore.entity.Orders;
 
 import java.util.List;
 import java.util.UUID;

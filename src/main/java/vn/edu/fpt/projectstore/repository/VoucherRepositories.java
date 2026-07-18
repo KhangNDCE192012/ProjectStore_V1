@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import webBackEnd.entity.Voucher;
+import vn.edu.fpt.projectstore.entity.Voucher;
+
 
 import java.util.Date;
 import java.util.Optional;

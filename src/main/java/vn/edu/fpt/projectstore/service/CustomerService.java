@@ -5,9 +5,9 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import webBackEnd.controller.Customer.CustomUserDetails;
-import webBackEnd.entity.Customer;
-import webBackEnd.repository.CustomerRepositories;
+import vn.edu.fpt.projectstore.controller.Customer.CustomUserDetails;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.repository.CustomerRepositories;
 
 import java.math.BigDecimal;
 import java.util.List;

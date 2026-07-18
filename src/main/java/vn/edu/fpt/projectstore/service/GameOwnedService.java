@@ -3,10 +3,10 @@ package vn.edu.fpt.projectstore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.GameOwned;
-import webBackEnd.repository.GameOwnedRepository;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.GameOwned;
+import vn.edu.fpt.projectstore.repository.GameOwnedRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

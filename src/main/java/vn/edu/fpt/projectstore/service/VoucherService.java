@@ -2,8 +2,8 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Voucher;
-import webBackEnd.repository.VoucherRepositories;
+import vn.edu.fpt.projectstore.entity.Voucher;
+import vn.edu.fpt.projectstore.repository.VoucherRepositories;
 
 import java.util.Date;
 import java.util.List;

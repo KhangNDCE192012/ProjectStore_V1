@@ -3,7 +3,8 @@ package vn.edu.fpt.projectstore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import webBackEnd.successfullyDat.SendMailTest;
+import vn.edu.fpt.projectstore.successfullyDat.SendMailTest;
+
 
 import java.math.BigDecimal;
 

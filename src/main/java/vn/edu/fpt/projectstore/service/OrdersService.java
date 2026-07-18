@@ -2,9 +2,9 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.Orders;
-import webBackEnd.repository.OrdersRepositories;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.Orders;
+import vn.edu.fpt.projectstore.repository.OrdersRepositories;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class OrdersService {
 
 
     @Autowired
-    private OrdersRepositories  ordersRepositories;
+    private OrdersRepositories ordersRepositories;
 
     public List<Orders> findAll(){
         return ordersRepositories.findAll();

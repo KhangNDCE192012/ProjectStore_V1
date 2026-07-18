@@ -3,8 +3,9 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Type;
-import webBackEnd.repository.TypeRepositories;
+import vn.edu.fpt.projectstore.entity.Type;
+import vn.edu.fpt.projectstore.repository.TypeRepositories;
+
 
 import java.util.List;
 import java.util.UUID;

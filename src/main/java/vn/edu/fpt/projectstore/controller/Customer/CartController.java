@@ -12,9 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.*;
-import webBackEnd.repository.*;
-import webBackEnd.service.*;
+import vn.edu.fpt.projectstore.entity.*;
+import vn.edu.fpt.projectstore.repository.*;
+import vn.edu.fpt.projectstore.service.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

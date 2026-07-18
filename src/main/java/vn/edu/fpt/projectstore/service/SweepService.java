@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.*;
-import webBackEnd.successfullyDat.SendMailTest;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.RentAccountGame;
+import vn.edu.fpt.projectstore.successfullyDat.SendMailTest;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

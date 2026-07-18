@@ -3,9 +3,10 @@ package vn.edu.fpt.projectstore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.Transaction;
-import webBackEnd.repository.TransactionRepositories;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.Transaction;
+import vn.edu.fpt.projectstore.repository.TransactionRepositories;
+
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import webBackEnd.entity.Voucher;
-import webBackEnd.service.VoucherService;
+import vn.edu.fpt.projectstore.entity.Voucher;
+import vn.edu.fpt.projectstore.service.VoucherService;
 
 import java.util.Date;
 import java.util.HashMap;

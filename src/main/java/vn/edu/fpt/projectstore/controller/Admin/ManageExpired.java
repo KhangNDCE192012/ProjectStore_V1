@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.service.GameAccountService;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.service.GameAccountService;
 
 import java.util.List;
 

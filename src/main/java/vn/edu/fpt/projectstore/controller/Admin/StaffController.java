@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.Staff;
-import webBackEnd.service.AdministratorService;
+import vn.edu.fpt.projectstore.entity.Staff;
+import vn.edu.fpt.projectstore.service.AdministratorService;
 
 import java.util.UUID;
 

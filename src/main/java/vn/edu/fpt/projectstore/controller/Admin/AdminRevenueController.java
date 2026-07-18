@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import webBackEnd.entity.Transaction;
-import webBackEnd.service.TransactionService;
+import vn.edu.fpt.projectstore.entity.Transaction;
+import vn.edu.fpt.projectstore.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.util.*;

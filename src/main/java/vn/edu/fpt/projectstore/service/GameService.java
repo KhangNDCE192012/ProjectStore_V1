@@ -2,8 +2,9 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Game;
-import webBackEnd.repository.GameRepositories;
+import vn.edu.fpt.projectstore.entity.Game;
+import vn.edu.fpt.projectstore.repository.GameRepositories;
+
 
 import java.util.List;
 import java.util.UUID;

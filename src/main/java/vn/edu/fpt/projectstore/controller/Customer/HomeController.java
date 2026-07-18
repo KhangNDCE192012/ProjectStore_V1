@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.*;
-import webBackEnd.service.*;
-import webBackEnd.successfullyDat.PathCheck;
-import webBackEnd.successfullyDat.SendMailTest;
+import vn.edu.fpt.projectstore.entity.*;
+import vn.edu.fpt.projectstore.service.*;
+import vn.edu.fpt.projectstore.successfullyDat.PathCheck;
+import vn.edu.fpt.projectstore.successfullyDat.SendMailTest;
 
 import java.math.BigDecimal;
 import java.security.MessageDigest;

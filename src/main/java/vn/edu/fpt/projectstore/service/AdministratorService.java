@@ -3,8 +3,8 @@ package vn.edu.fpt.projectstore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Staff;
-import webBackEnd.repository.StaffRepositories;
+import vn.edu.fpt.projectstore.entity.Staff;
+import vn.edu.fpt.projectstore.repository.StaffRepositories;
 
 import java.time.LocalDateTime;
 import java.util.List;

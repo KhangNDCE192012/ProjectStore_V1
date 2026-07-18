@@ -2,7 +2,8 @@ package vn.edu.fpt.projectstore.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import webBackEnd.entity.Game;
+import vn.edu.fpt.projectstore.entity.Game;
+
 
 import java.util.Optional;
 import java.util.UUID;

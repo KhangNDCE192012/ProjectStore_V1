@@ -2,9 +2,10 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Game;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.repository.GameAccountRepositories;
+import vn.edu.fpt.projectstore.entity.Game;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.repository.GameAccountRepositories;
+
 
 import java.math.BigDecimal;
 import java.util.*;

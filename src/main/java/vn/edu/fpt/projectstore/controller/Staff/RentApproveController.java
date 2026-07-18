@@ -6,12 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.*;
-import webBackEnd.repository.CustomerRepositories;
-import webBackEnd.service.OrderDetailService;
-import webBackEnd.service.OrdersService;
-import webBackEnd.service.RentAccountGameService;
-import webBackEnd.service.TransactionService;
+import vn.edu.fpt.projectstore.entity.*;
+import vn.edu.fpt.projectstore.repository.CustomerRepositories;
+import vn.edu.fpt.projectstore.service.OrderDetailService;
+import vn.edu.fpt.projectstore.service.OrdersService;
+import vn.edu.fpt.projectstore.service.RentAccountGameService;
+import vn.edu.fpt.projectstore.service.TransactionService;
 
 import java.time.LocalDateTime;
 import java.util.*;

@@ -2,9 +2,10 @@ package vn.edu.fpt.projectstore.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.RentAccountGame;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.RentAccountGame;
+
 
 import java.time.LocalDateTime;
 import java.util.List;

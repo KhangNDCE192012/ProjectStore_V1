@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.Shift;
-import webBackEnd.entity.Staff;
-import webBackEnd.repository.ShiftRepository;
-import webBackEnd.service.AdministratorService;
+import vn.edu.fpt.projectstore.entity.Shift;
+import vn.edu.fpt.projectstore.entity.Staff;
+import vn.edu.fpt.projectstore.repository.ShiftRepository;
+import vn.edu.fpt.projectstore.service.AdministratorService;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

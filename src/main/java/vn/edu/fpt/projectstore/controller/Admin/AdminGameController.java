@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.Game;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.Type;
-import webBackEnd.service.*;
-import webBackEnd.successfullyDat.PathCheck;
+import vn.edu.fpt.projectstore.entity.Game;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.Type;
+import vn.edu.fpt.projectstore.service.*;
+import vn.edu.fpt.projectstore.successfullyDat.PathCheck;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

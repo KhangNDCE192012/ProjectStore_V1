@@ -3,7 +3,8 @@ package vn.edu.fpt.projectstore.controller.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import webBackEnd.entity.Customer;
+import vn.edu.fpt.projectstore.entity.Customer;
+
 
 import java.util.Collection;
 import java.util.List;

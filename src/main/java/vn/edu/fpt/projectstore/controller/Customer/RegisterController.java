@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import webBackEnd.entity.Customer;
-import webBackEnd.repository.CustomerRepositories;
-import webBackEnd.service.very.MailService;
-
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.repository.CustomerRepositories;
+import vn.edu.fpt.projectstore.service.very.MailService;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.HashMap;

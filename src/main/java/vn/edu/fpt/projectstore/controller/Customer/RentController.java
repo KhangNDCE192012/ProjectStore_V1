@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.*;
-import webBackEnd.repository.*;
-import webBackEnd.service.TransactionService;
+import vn.edu.fpt.projectstore.entity.*;
+import vn.edu.fpt.projectstore.repository.*;
+import vn.edu.fpt.projectstore.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -2,10 +2,10 @@ package vn.edu.fpt.projectstore.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import webBackEnd.entity.Cart;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.Game;
-import webBackEnd.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.Cart;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.entity.Game;
+import vn.edu.fpt.projectstore.entity.GameAccount;
 
 import java.util.List;
 import java.util.Optional;

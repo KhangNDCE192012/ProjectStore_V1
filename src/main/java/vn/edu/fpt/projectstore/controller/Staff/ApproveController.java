@@ -8,11 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.controller.Customer.CustomUserDetails;
-import webBackEnd.entity.*;
-import webBackEnd.service.*;
-import webBackEnd.successfullyDat.GetQuantity;
-
+import vn.edu.fpt.projectstore.controller.Customer.CustomUserDetails;
+import vn.edu.fpt.projectstore.entity.*;
+import vn.edu.fpt.projectstore.service.*;
+import vn.edu.fpt.projectstore.successfullyDat.GetQuantity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;

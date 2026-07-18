@@ -6,11 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
-import webBackEnd.service.OrderDetailService;
-import webBackEnd.service.OrdersService;
-import webBackEnd.successfullyDat.GetQuantity;
+import vn.edu.fpt.projectstore.entity.OrderDetail;
+import vn.edu.fpt.projectstore.entity.Orders;
+import vn.edu.fpt.projectstore.service.OrderDetailService;
+import vn.edu.fpt.projectstore.service.OrdersService;
+import vn.edu.fpt.projectstore.successfullyDat.GetQuantity;
 
 import java.time.LocalDateTime;
 import java.util.*;

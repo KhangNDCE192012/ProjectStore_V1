@@ -2,10 +2,10 @@ package vn.edu.fpt.projectstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
-import webBackEnd.repository.OrderDetailRepositories;
+import vn.edu.fpt.projectstore.entity.GameAccount;
+import vn.edu.fpt.projectstore.entity.OrderDetail;
+import vn.edu.fpt.projectstore.entity.Orders;
+import vn.edu.fpt.projectstore.repository.OrderDetailRepositories;
 
 import java.util.Collections;
 import java.util.List;
