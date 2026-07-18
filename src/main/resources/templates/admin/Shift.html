@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shift Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body { background:#f5f7fa; font-family:"Roboto", sans-serif; }
+
+        .sidebar {
+            width:260px;
+            min-height:100vh;
+            background:#2a3f54;
+            position:fixed;
+            left:0; top:0;
+            color:#ecf0f1;
+        }
+        .sidebar h5 {
+            padding:20px;
+            text-align:center;
+            border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar a {
+            display:block;
+            padding:14px 24px;
+            color:#ecf0f1;
+            text-decoration:none;
+        }
+        .sidebar a i { width:22px; }
+        .sidebar a:hover, .sidebar a.active { background:#1abb9c; }
+
+        .topbar {
+            margin-left:260px;
+            height:60px;
+            background:#fff;
+            border-bottom:1px solid #e0e0e0;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 25px;
+        }
+
+        .content {
+            margin-left:260px;
+            padding:30px;
+        }
+
+        .week-grid{
+            display:grid;
+            grid-template-columns:repeat(7, minmax(0, 1fr));
+            gap:12px;
+            margin-top:14px;
+        }
+        @media (max-width:1200px){
+            .week-grid{ grid-template-columns:repeat(4, 1fr); }
+        }
+        @media (max-width:768px){
+            .week-grid{ grid-template-columns:repeat(2, 1fr); }
+        }
+        @media (max-width:520px){
+            .week-grid{ grid-template-columns:1fr; }
+        }
+
+        .day-cell{
+            border:1px solid rgba(0,0,0,.08);
+            border-radius:14px;
+            background:#fff;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            min-height:210px;
+        }
+
+        .day-head{
+            padding:10px 12px;
+            background:#eef3f7;
+            border-bottom:1px solid rgba(0,0,0,.06);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+        .day-name{ font-weight:800; font-size:13px; color:#223; }
+        .day-date{ font-size:12px; color:#6c757d; }
+
+        .pill{
+            font-size:11px;
+            font-weight:800;
+            padding:2px 8px;
+            border-radius:999px;
+            border:1px solid rgba(0,0,0,.10);
+            background:#fff;
+        }
+
+        .slot{
+            padding:10px 12px;
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
+        .slot + .slot{ border-top:1px dashed rgba(0,0,0,.15); }
+
+        .slot-title{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            font-weight:800;
+            font-size:12px;
+        }
+
+        .mini-note{ font-size:11px; color:#6c757d; }
+
+        .form-control:focus, .form-select:focus{
+            box-shadow:0 0 0 .2rem rgba(26,187,156,.15);
+            border-color:rgba(26,187,156,.6);
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="fragments/adminSidebar :: adminSidebar"></div>
+
+
+<div class="topbar">
+    <h6 class="mb-0">
+        Shift Management
+        <span class="text-muted" th:text="' - ' + ${weekStart} + ' → ' + ${weekEnd}"></span>
+    </h6>
+    <div class="d-flex gap-2">
+        <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="bg-white rounded-3 shadow-sm p-3 p-md-4">
+
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="text-muted small">
+                Tip: select staff for Morning/Night shifts for each day, then click Save.
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <input id="monthPicker" type="month" class="form-control form-control-sm"
+                       th:value="${monthValue}">
+                <a class="btn btn-sm btn-outline-secondary"
+                   th:href="@{/adminHome/shift(week=${prevWeekStart})}">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </a>
+                <a class="btn btn-sm btn-outline-secondary"
+                   th:href="@{/adminHome/shift(week=${nextWeekStart})}">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+                <button form="weekForm" type="submit" class="btn btn-sm btn-success">
+                    <i class="bi bi-save2 me-1"></i> Save Week
+                </button>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        <form id="weekForm" th:action="@{/adminHome/shift/weekly-save}" method="post">
+            <input type="hidden" name="weekStart" th:value="${weekStart}"/>
+
+            <div class="week-grid">
+                <div class="day-cell" th:each="d,st : ${days}">
+                    <div class="day-head">
+                        <div>
+                            <div class="day-name" th:text="${#temporals.format(d,'EEE')}"></div>
+                            <div class="day-date" th:text="${#temporals.format(d,'yyyy-MM-dd')}"></div>
+                        </div>
+                        <span class="pill">Day <span th:text="${st.count}"></span></span>
+                    </div>
+
+                    <input type="hidden" name="date"
+                           th:value="${#temporals.format(d,'yyyy-MM-dd')}"/>
+
+                    <div class="slot">
+                        <div class="slot-title">
+                            <div><i class="bi bi-sunrise-fill text-warning me-1"></i>Morning</div>
+                            <span class="pill">00:00 - 12:00</span>
+                        </div>
+                        <select class="form-select form-select-sm" name="morningStaffId">
+                            <option value="">-- Select staff --</option>
+                            <option th:each="s : ${staffList}"
+                                    th:value="${s.id}"
+                                    th:text="${s.username}"
+                                    th:selected="${shiftMap[#temporals.format(d,'yyyy-MM-dd') + '|MORNING']} == ${s.id}">
+                            </option>
+                        </select>
+                        <div class="mini-note">Fixed morning shift</div>
+                    </div>
+
+                    <div class="slot">
+                        <div class="slot-title">
+                            <div><i class="bi bi-moon-stars-fill text-primary me-1"></i>Night</div>
+                            <span class="pill">12:00 - 24:00</span>
+                        </div>
+                        <select class="form-select form-select-sm" name="nightStaffId">
+                            <option value="">-- Select staff --</option>
+                            <option th:each="s : ${staffList}"
+                                    th:value="${s.id}"
+                                    th:text="${s.username}"
+                                    th:selected="${shiftMap[#temporals.format(d,'yyyy-MM-dd') + '|NIGHT']} == ${s.id}">
+                            </option>
+                        </select>
+                        <div class="mini-note">Fixed night shift</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const monthPicker = document.getElementById("monthPicker");
+    if (monthPicker) {
+        monthPicker.addEventListener("change", function () {
+            if (!this.value) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set("month", this.value);
+            url.searchParams.delete("week");
+            window.location.href = url.toString();
+        });
+    }
+</script>
+
+</body>
+</html>

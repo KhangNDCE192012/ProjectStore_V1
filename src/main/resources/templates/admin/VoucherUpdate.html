@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Voucher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: "Roboto", sans-serif;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: #2a3f54;
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: #ecf0f1;
+        }
+
+        .sidebar h5 {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 24px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a i { width: 22px; }
+
+        .sidebar a:hover {
+            background: #1abb9c;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            margin-left: 260px;
+            height: 60px;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        /* CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .card-detail {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            padding: 25px 30px;
+        }
+
+        .form-label { font-weight: 500; }
+        .value-readonly { background-color: #f8f9fa; }
+        .btn-access {
+            border-radius: 30px;
+            padding: 5px 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="fragments/adminSidebar :: adminSidebar"></div>
+
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <h5 class="mb-0"><i class="bi bi-ticket-perforated me-2"></i>Edit Voucher</h5>
+    <a th:href="@{/adminHome/listVoucher}" class="btn btn-outline-secondary btn-access">
+        <i class="bi bi-arrow-left me-1"></i>Back to Voucher List
+    </a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+    <form th:action="@{/adminHome/saveVoucher}" th:object="${voucher}" method="post">
+
+        <div class="card-detail">
+            <div class="row g-3">
+
+                <!-- Voucher ID -->
+                <div class="col-md-6">
+                    <label class="form-label">Voucher ID</label>
+                    <input type="text" class="form-control value-readonly" th:value="*{id}" disabled>
+                    <input type="hidden" th:field="*{id}">
+                </div>
+
+                <!-- Updated by staff -->
+                <div class="col-md-6">
+                    <label class="form-label">Updated By (Staff)</label>
+                    <input type="text" class="form-control value-readonly"
+                           th:value="${voucher.staff != null ? voucher.staff.username : 'N/A'}" disabled>
+                </div>
+
+                <!-- Voucher Name -->
+                <div class="col-md-6">
+                    <label class="form-label">Voucher Name</label>
+                    <input type="text" class="form-control" th:field="*{voucherName}">
+                </div>
+
+                <!-- Value -->
+                <div class="col-md-6">
+                    <label class="form-label">Value (%)</label>
+                    <input type="number" class="form-control" th:field="*{value}" min="1">
+                </div>
+
+                <!-- Start Date -->
+                <div class="col-md-6">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control"
+                           th:value="${#dates.format(voucher.startDate, 'yyyy-MM-dd')}"
+                           name="startDate">
+                </div>
+
+                <!-- End Date -->
+                <div class="col-md-6">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-control"
+                           th:value="${#dates.format(voucher.endDate, 'yyyy-MM-dd')}"
+                           name="endDate">
+                </div>
+
+                <!-- Last Updated -->
+                <div class="col-md-6">
+                    <label class="form-label">Last Updated</label>
+                    <input type="text" class="form-control value-readonly"
+                           th:value="${#temporals.format(voucher.updateDate, 'yyyy-MM-dd HH:mm:ss')}" disabled>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>Save
+                    </button>
+                    <a th:href="@{/adminHome/listVoucher}" class="btn btn-secondary">Cancel</a>
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+package vn.edu.fpt.projectstore.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import webBackEnd.entity.Customer;
+import webBackEnd.entity.Transaction;
+import webBackEnd.repository.TransactionRepositories;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Transactional
+public class TransactionService {
+
+    @Autowired
+    private TransactionRepositories transactionRepositories;
+
+    public List<Transaction> getAll() {
+        return transactionRepositories.findAll();
+    }
+
+    public List<Transaction> getTransactionHistory(Customer customer) {
+        return transactionRepositories
+                .findByCustomerOrderByDateCreatedDesc(customer);
+    }
+
+    public List<Transaction> search(Customer customer, String keyword) {
+        return transactionRepositories
+                .findByCustomerAndDescriptionContainingIgnoreCaseOrderByDateCreatedDesc(
+                        customer, keyword
+                );
+    }
+
+    public Transaction save(Transaction transaction) {
+        return transactionRepositories.save(transaction);
+    }
+
+    public List<Transaction> searchByTransactionId(
+            Customer customer, UUID transactionId) {
+
+        return transactionRepositories
+                .findByCustomerAndTransactionId(customer, transactionId);
+    }
+
+    public BigDecimal sumAmountByCustomer(UUID customerId) {
+
+        List<Transaction> transactions =
+                transactionRepositories.findByCustomer_CustomerId(customerId);
+
+        return transactions.stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<Transaction> findByCustomer(Customer customer) {
+        return transactionRepositories.findByCustomer(customer);
+    }
+
+
+}

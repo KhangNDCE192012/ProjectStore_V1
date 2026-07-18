@@ -1,0 +1,25 @@
+package vn.edu.fpt.projectstore.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import webBackEnd.entity.Customer;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface CustomerRepositories extends JpaRepository<Customer, UUID> {
+    Optional<Customer> findByUsernameIgnoreCase(String username);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+
+    List<Customer> findAll();
+
+    Customer findByCustomerId(UUID customerId);
+
+    Customer findByUsername(String username);
+
+    Customer findByEmail(String email);
+
+}

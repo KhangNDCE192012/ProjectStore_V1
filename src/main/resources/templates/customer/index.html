@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <title>Cửa Hàng bán Tài Khoản Game</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <style>
+        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .4s ease}
+        .popup{background:linear-gradient(135deg,#fff,#f8f9ff);width:420px;max-width:90%;padding:30px 25px;border-radius:16px;text-align:center;box-shadow:0 15px 40px rgba(0,0,0,.25);position:relative;animation:scaleIn .4s ease}
+        .close-btn{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:none;background:#ff4d4f;color:#fff;font-size:20px;cursor:pointer;transition:.3s}
+        .close-btn:hover{background:#d9363e;transform:rotate(90deg)}
+        .popup-title{font-size:22px;font-weight:700;color:#2f54eb;margin-bottom:12px}
+        .announcement-text{font-size:15px;color:#555;margin-bottom:10px}
+        .highlighted-text{font-size:18px;font-weight:700;color:#fa541c;margin:12px 0}
+        .promo-text{font-size:15px;color:#222;margin-bottom:6px}
+        .note-text{font-size:14px;color:#666;margin-bottom:18px}
+        .cta-link{display:inline-block;padding:12px 26px;background:linear-gradient(135deg,#ff7a18,#ffb347);color:#fff;text-decoration:none;font-weight:700;border-radius:30px;transition:.3s;box-shadow:0 6px 18px rgba(255,122,24,.45)}
+        .cta-link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(255,122,24,.6)}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes scaleIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    </style>
+</head>
+
+<body>
+
+<div class="overlay" id="popupOverlay">
+    <div class="popup">
+        <button class="close-btn" id="closePopup">&times;</button>
+        <h2 class="popup-title">🎉 THÔNG BÁO 🎉</h2>
+        <p class="announcement-text">ACCOUNTSTORE.COM tưng bừng khai trương năm mới ❤️</p>
+        <p class="highlighted-text">🔥 SIÊU SALE NGẬP TRÀN ƯU ĐÃI 🔥</p>
+        <p class="promo-text">Mua <b>2 ACC GAME</b> được tặng ngay <b>1 ACC tự chọn</b></p>
+        <p class="note-text">Tính tiền theo giá <b>3 ACC</b></p>
+        <a href="javascript:void(0)" class="cta-link" id="ctaLink">🚀 MUA NGAY</a>
+    </div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+                        <a th:href="@{/veryAccount/forgot-password}"
+                           class="form-text text-muted text-decoration-none float-end">
+                            Quên mật khẩu?
+                        </a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success text-center">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form id="registerForm" autocomplete="off">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                        <input name="username" type="text" class="form-control"
+                               id="registerUsername" placeholder="Nhập tên người dùng" required>
+                        <div class="invalid-feedback" id="errRegisterUsername"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email:</label>
+                        <input name="email" type="email" class="form-control"
+                               id="registerEmail" placeholder="Nhập email" required>
+                        <div class="invalid-feedback" id="errRegisterEmail"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                        <input name="password" type="password" class="form-control"
+                               id="registerPassword" placeholder="Tạo mật khẩu" required>
+                        <div class="invalid-feedback" id="errRegisterPassword"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input name="confirmPassword" type="password" class="form-control"
+                               id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <div class="invalid-feedback" id="errConfirmPassword"></div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button"
+                                class="btn btn-primary mt-3"
+                                id="registerBtn">
+                            Đăng ký
+                        </button>
+                    </div>
+                    <div id="registerError" class="text-danger mt-2"></div>
+                    <div id="registerSuccess" class="text-success mt-2"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="forgotModalLabel">Quên mật khẩu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="forgotMsg" class="alert d-none"></div>
+
+                <form id="forgotForm">
+                    <div class="mb-3">
+                        <label for="forgotEmail" class="form-label">Nhập email đã đăng ký:</label>
+                        <input type="email" class="form-control" id="forgotEmail" name="email" placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Gửi email đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none" id="backToLogin">Quay lại đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-pill" href="/home">
+                        <i class="fa fa-home me-2"></i>Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-list me-2"></i>Tài khoản vĩnh viễn
+                    </a>
+                    <ul class="dropdown-menu dropdown-soft">
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='AOV')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                AOV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='FREE FIRE')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                Free Fire
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/renting}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/transaction}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-credit-card me-2"></i>Ví
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item"
+                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
+        .game-nav .container-fluid{display:flex;align-items:center}
+        .nav-logo{height:180px;width:auto}
+        .nav-center{gap:26px}
+        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
+        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
+        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
+        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
+        .dropdown-soft{border-radius:14px;padding:6px}
+        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
+        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+    </style>
+</nav>
+
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+        alertBox.classList.remove('d-none');
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
+
+<div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert" role="alert">
+    <i class="bi bi-x-circle-fill me-2"></i>
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<style>
+    .auto-hide-alert{max-width:720px;margin-left:auto;margin-right:auto;font-weight:500}
+</style>
+
+<div class="container-fluid carousel bg-light px-0">
+    <div class="row g-0 justify-content-end">
+        <div class="col-12 col-lg-7 col-xl-9">
+            <div class="header-carousel owl-carousel bg-light py-5">
+                <div class="row g-0 header-carousel-item align-items-center">
+                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                        <img src="/img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
+                    </div>
+                    <div class="col-xl-6 carousel-content p-4">
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing:3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân</h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" th:href="@{/home/game/{id}(id=e8301a2f-aeb4-42fb-9c3c-41b16d3dea8d)}">Mua ngay</a>
+                    </div>
+                </div>
+                <div class="row g-0 header-carousel-item align-items-center">
+                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                        <img src="/img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
+                    </div>
+                    <div class="col-xl-6 carousel-content p-4">
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing:3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" th:href="@{/home/game/{id}(id=b1cf2298-5c85-4fba-920b-63c028131163)}">Mua ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
+            <div class="carousel-header-banner h-100">
+                <img src="/img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit:cover;" alt="Image">
+                <div class="carousel-banner-offer">
+                    <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
+                </div>
+                <div class="carousel-banner">
+                    <div class="carousel-banner-content text-center p-4">
+                        <a href="#" class="d-block mb-2">Loại trang phục</a>
+                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid px-0">
+    <div class="row g-0">
+        <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
+            <div class="p-4">
+                <div class="d-inline-flex align-items-center">
+                    <img src="/img/money.png" width="32" height="32" alt="money icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Miễn phí đổi trả</h6>
+                        <p class="mb-0">Chính sách hoàn tiền trong vòng 30 ngày!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/customer-service.png" width="32" height="32" alt="customer-service icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Hỗ trợ 24/7</h6>
+                        <p class="mb-0">Luôn sẵn sàng hỗ trợ bạn mọi lúc!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/atm-card.png" width="32" height="32" alt="atm-card icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Nhận mã giảm giá</h6>
+                        <p class="mb-0">Có thể nhận mã giảm giá khi mua hàng</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/padlock.png" width="32" height="32" alt="padlock icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Bảo mật thanh toán</h6>
+                        <p class="mb-0">Chúng tôi luôn đặt vấn đề này lên hàng đầu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/insurance.png" width="32" height="32" alt="insurance icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Dịch vụ online</h6>
+                        <p class="mb-0">Cho thuê tài khoản game theo sở thích!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/hot-sale.png" width="32" height="32" alt="hot-sale icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">khi nạp tiền</h6>
+                        <p class="mb-0">Nhận được khuyến mãi khi nạp tiền vào shop qua ATM!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid product py-5">
+    <div class="container py-5">
+        <div class="tab-class">
+            <div class="row g-4">
+                <div class="col-12 text-center">
+                    <h1>Our Game</h1>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div id="tab-all" class="tab-pane fade show active p-0">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-6 col-lg-4 col-xl-3" th:each="p, i : ${game}">
+                            <div class="product-item rounded">
+                                <div class="product-item-inner border rounded pink">
+                                    <div class="product-item-inner-item">
+                                        <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}" class="img-fluid w-100 rounded-top product-img"/>
+                                        <div class="product-details">
+                                            <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}">
+                                                <i class="fa fa-eye fa-1x"></i>
+                                            </a>
+                                        </div>
+                                        <div class="text-center rounded-bottom p-4">
+                                            <a class="d-block h4" th:text="${p.gameName}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .pink{background-color:#FFEED8}
+    </style>
+</div>
+
+<div class="container-fluid py-5" style="background:pink;color:#444;border-top:2px solid #f1f1f1;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
+                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
+                <p>Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.</p>
+                <div class="d-flex mt-3 gap-3">
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
+                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
+                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
+                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
+                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
+                </button>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
+                <ul class="footer-links">
+                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
+            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/lib/wow/wow.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("/login", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const err = await res.json();
+                    const errorBox = document.getElementById("loginError");
+                    errorBox.textContent = err.error;
+                    errorBox.classList.remove("d-none");
+                    setTimeout(() => {
+                        errorBox.classList.add("d-none");
+                    }, 3000);
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data?.redirect) window.location.href = data.redirect;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const loginModalEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                    registerModal.show();
+                });
+                if (loginModal) loginModal.hide();
+                else new bootstrap.Modal(loginModalEl).hide();
+            });
+        });
+
+        document.querySelectorAll(".open-login").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const registerModalEl = document.getElementById("registerModal");
+                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
+                });
+                if (registerModal) registerModal.hide();
+                else new bootstrap.Modal(registerModalEl).hide();
+            });
+        });
+
+        document.querySelectorAll(".open-register").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const loginEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginEl);
+                loginEl.addEventListener("hidden.bs.modal", function handler() {
+                    loginEl.removeEventListener("hidden.bs.modal", handler);
+                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                    registerModal.show();
+                });
+                if (loginModal) loginModal.hide();
+                else new bootstrap.Modal(loginEl).hide();
+            });
+        });
+
+        if (window.location.search.includes("error=true") || window.location.search.includes("login=true")) {
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        }
+    });
+</script>
+
+<script th:if="${openRegister}">
+    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+    registerModal.show();
+</script>
+
+<script>
+    setTimeout(() => {
+        const spinner = document.getElementById("spinner");
+        if (spinner) spinner.classList.remove("show");
+    }, 500);
+</script>
+
+<script>
+    document.addEventListener("click", function (event) {
+        const categoryBox = document.getElementById("allCat");
+        const toggleBtn = document.querySelector("[data-bs-target='#allCat']");
+        if (categoryBox && toggleBtn && !categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
+            let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
+            if (bsCollapse) bsCollapse.hide();
+        }
+    });
+</script>
+
+<script>
+    new Swiper(".mySwiper1", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: {el: ".mySwiper1 .swiper-pagination", clickable: true}
+    });
+
+    new Swiper(".mySwiper2", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: {el: ".mySwiper2 .swiper-pagination", clickable: true}
+    });
+</script>
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll(".auto-hide-alert").forEach(alert => {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+
+<script>
+    const overlay = document.getElementById("popupOverlay");
+    const closeBtn = document.getElementById("closePopup");
+    const ctaLink = document.getElementById("ctaLink");
+    function closePopup() { if (overlay) overlay.style.display = "none"; }
+    if (closeBtn) closeBtn.addEventListener("click", closePopup);
+    if (ctaLink) ctaLink.addEventListener("click", closePopup);
+</script>
+
+<script th:src="@{/js/product.js}"></script>
+
+<!--<script>-->
+<!--    function getCsrf() {-->
+<!--        const tokenEl = document.querySelector('meta[name="_csrf"]');-->
+<!--        const headerEl = document.querySelector('meta[name="_csrf_header"]');-->
+<!--        const token = tokenEl ? tokenEl.getAttribute('content') : null;-->
+<!--        const header = headerEl ? headerEl.getAttribute('content') : null;-->
+<!--        return { token, header };-->
+<!--    }-->
+
+<!--    function clearStates() {-->
+<!--        const u = document.getElementById("registerUsername");-->
+<!--        const e = document.getElementById("registerEmail");-->
+<!--        const p = document.getElementById("registerPassword");-->
+<!--        const c = document.getElementById("confirmPassword");-->
+
+<!--        [u, e, p, c].forEach(x => x.classList.remove("is-invalid", "is-valid"));-->
+
+<!--        const eu = document.getElementById("errRegisterUsername");-->
+<!--        const ee = document.getElementById("errRegisterEmail");-->
+<!--        const ep = document.getElementById("errRegisterPassword");-->
+<!--        const ec = document.getElementById("errConfirmPassword");-->
+<!--        if (eu) eu.textContent = "";-->
+<!--        if (ee) ee.textContent = "";-->
+<!--        if (ep) ep.textContent = "";-->
+<!--        if (ec) ec.textContent = "";-->
+<!--    }-->
+
+<!--    function markInvalid(fieldId, msgId, msg) {-->
+<!--        const field = document.getElementById(fieldId);-->
+<!--        const msgEl = document.getElementById(msgId);-->
+<!--        if (field) field.classList.add("is-invalid");-->
+<!--        if (msgEl) msgEl.textContent = msg || "";-->
+<!--    }-->
+
+<!--    function mapBackendErrorToField(errorMsg) {-->
+<!--        const msg = (errorMsg || "").toLowerCase();-->
+<!--        clearStates();-->
+
+<!--        if (msg.includes("username")) {-->
+<!--            markInvalid("registerUsername", "errRegisterUsername", errorMsg);-->
+<!--            return true;-->
+<!--        }-->
+<!--        if (msg.includes("email")) {-->
+<!--            markInvalid("registerEmail", "errRegisterEmail", errorMsg);-->
+<!--            return true;-->
+<!--        }-->
+<!--        if (msg.includes("password")) {-->
+<!--            if (msg.includes("match") || msg.includes("confirm")) {-->
+<!--                markInvalid("confirmPassword", "errConfirmPassword", errorMsg);-->
+<!--            } else {-->
+<!--                markInvalid("registerPassword", "errRegisterPassword", errorMsg);-->
+<!--            }-->
+<!--            return true;-->
+<!--        }-->
+<!--        return false;-->
+<!--    }-->
+
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        const form = document.getElementById("registerForm");-->
+<!--        const btn = document.getElementById("registerBtn");-->
+<!--        const errorDiv = document.getElementById("registerError");-->
+<!--        const successDiv = document.getElementById("registerSuccess");-->
+
+<!--        btn.addEventListener("click", function () {-->
+<!--            if (!form.checkValidity()) {-->
+<!--                form.reportValidity();-->
+<!--                return;-->
+<!--            }-->
+
+<!--            btn.disabled = true;-->
+<!--            errorDiv.innerText = "";-->
+<!--            successDiv.innerText = "";-->
+<!--            clearStates();-->
+
+<!--            const formData = new FormData(form);-->
+<!--            const { token, header } = getCsrf();-->
+
+<!--            const headers = {-->
+<!--                "X-Requested-With": "XMLHttpRequest",-->
+<!--                "Content-Type": "application/x-www-form-urlencoded"-->
+<!--            };-->
+<!--            if (token && header) headers[header] = token;-->
+
+<!--            fetch("/register", {-->
+<!--                method: "POST",-->
+<!--                headers,-->
+<!--                body: new URLSearchParams(formData)-->
+<!--            })-->
+<!--                .then(res => res.json())-->
+<!--                .then(data => {-->
+<!--                    if (data.error) {-->
+<!--                        const mapped = mapBackendErrorToField(data.error);-->
+<!--                        if (!mapped) errorDiv.innerText = data.error;-->
+
+<!--                        if ((data.error || "").toLowerCase().includes("password")) {-->
+<!--                            document.getElementById("registerPassword").value = "";-->
+<!--                            document.getElementById("confirmPassword").value = "";-->
+<!--                        }-->
+
+<!--                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);-->
+<!--                        return;-->
+<!--                    }-->
+
+<!--                    if (data.success) {-->
+<!--                        successDiv.innerText = data.success;-->
+<!--                        form.reset();-->
+<!--                        clearStates();-->
+<!--                        setTimeout(() => { successDiv.innerText = ""; }, 3000);-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(() => {-->
+<!--                    errorDiv.innerText = "Có lỗi xảy ra. Vui lòng thử lại.";-->
+<!--                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);-->
+<!--                })-->
+<!--                .finally(() => {-->
+<!--                    btn.disabled = false;-->
+<!--                });-->
+<!--        });-->
+
+<!--        form.addEventListener("submit", function (e) {-->
+<!--            e.preventDefault();-->
+<!--            btn.click();-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+<script>
+    document.getElementById("registerBtn").addEventListener("click", async function () {
+        const btn = this;
+        btn.disabled = true;
+
+        const form = document.getElementById("registerForm");
+        const data = new URLSearchParams(new FormData(form));
+
+        document.getElementById("registerError").innerText = "";
+        document.getElementById("registerSuccess").innerText = "";
+
+        try {
+            const res = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: data
+            });
+
+            const json = await res.json();
+
+            if (json.error) {
+                document.getElementById("registerError").innerText = json.error;
+                btn.disabled = false;
+                return;
+            }
+
+            if (json.success) {
+                document.getElementById("registerSuccess").innerText = json.success;
+                form.reset();
+
+                // ⏱️ tự đóng modal sau 3s (optional)
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(
+                        document.getElementById("registerModal")
+                    );
+                    modal?.hide();
+                }, 3000);
+            }
+
+        } catch (e) {
+            document.getElementById("registerError").innerText =
+                "Có lỗi xảy ra. Vui lòng thử lại.";
+            btn.disabled = false;
+        }
+    });
+</script>
+
+
+</body>
+</html>

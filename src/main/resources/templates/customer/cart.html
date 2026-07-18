@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <title>Cửa Hàng bán Tài Khoản Game</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</head>
+
+<body>
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success text-center">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                        <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email:</label>
+                        <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                        <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                    </div>
+                    <div id="registerError" class="text-danger mt-2"></div>
+                    <div id="registerSuccess" class="text-success mt-2"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="spinner"
+     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Navbar & Hero Start -->
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-pill" href="/home">
+                        <i class="fa fa-home me-2"></i>Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-list me-2"></i>Tài khoản vĩnh viễn
+                    </a>
+                    <ul class="dropdown-menu dropdown-soft">
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='AOV')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                AOV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='FREE FIRE')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                Free Fire
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/renting}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/transaction}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-credit-card me-2"></i>Ví
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item"
+                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
+        .game-nav .container-fluid{display:flex;align-items:center}
+        .nav-logo{height:180px;width:auto}
+        .nav-center{gap:26px}
+        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
+        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
+        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
+        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
+        .dropdown-soft{border-radius:14px;padding:6px}
+        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
+        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+    </style>
+</nav>
+
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+        alertBox.classList.remove('d-none');
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
+
+<!-- Navbar & Hero End -->
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Cart Page</h1>
+    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">
+        <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Cart Page</li>
+    </ol>
+</div>
+
+ <div class="container-fluid py-5">
+    <div class="container py-5">
+        <form id="checkoutForm" onsubmit="return submitCheckout(event)">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                    <tr>
+                        <th style="width:60px;">
+                            <input class="form-check-input" type="checkbox" id="checkAll">
+                        </th>
+                        <th>Game</th>
+                        <th>Model</th>
+                        <th>Rank</th>
+                        <th>Skin</th>
+                        <th>Level</th>
+                        <th>Vip</th>
+                        <th>Tài khoản</th>
+                        <th>Giá</th>
+                        <th>Tổng giá</th>
+                        <th>Handle</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <!-- GIỎ TRỐNG -->
+                    <tr th:if="${list == null || #lists.isEmpty(list)}">
+                        <td colspan="11" class="text-center py-4">
+                            Giỏ hàng đang trống
+                        </td>
+                    </tr>
+
+                    <!-- ITEM -->
+                    <tr th:each="c : ${list}">
+                        <!-- Checkbox -->
+                        <td>
+                            <input class="form-check-input item-check"
+                                   type="checkbox"
+                                   name="selectedCartIds"
+                                   th:value="${c.cartId}"
+                                   th:data-price="${c.price != null ? c.price : 0}">
+                        </td>
+                        <!-- Game -->
+                        <td th:text="${c.game?.gameName ?: 'N/A'}"></td>
+
+                        <!-- Model -->
+                        <td th:text="${c.game?.gameId ?: 'N/A'}"></td>
+
+                        <!-- Rank -->
+                        <td th:text="${c.rank?: 'N/A'}"></td>
+
+                        <!-- Skin -->
+                        <td th:text="${c.skin ?: 'N/A'}"></td>
+
+                        <!-- Level -->
+                        <td th:text="${c.lovel?: 'N/A'}"></td>
+
+                        <!-- Vip -->
+                        <td th:text="${c.vip ?: 'N/A'}"></td>
+                        <!-- Tài khoản (Permanent / Rent) -->
+                        <td>
+                            <!-- VĨNH VIỄN -->
+                            <span th:if="${c.duration == 0}">
+        Vĩnh viễn
+    </span>
+
+                            <!-- THUÊ -->
+                            <select th:if="${c.duration > 0}"
+                                    class="form-select form-select-sm rent-select"
+                                    th:data-cart-id="${c.cartId}"
+                                    th:data-base-price="${c.price}"
+                                    onchange="changeRentDuration(this)">
+                                <option value="1" th:selected="${c.duration == 1}">Thuê 1 tháng</option>
+                                <option value="2" th:selected="${c.duration == 2}">Thuê 2 tháng (-10%)</option>
+                                <option value="3" th:selected="${c.duration == 3}">Thuê 3 tháng (-15%)</option>
+                            </select>
+                        </td>
+
+                        <!-- Giá gốc -->
+                        <td th:text="${c.price != null
+    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+    : '0 đ'}"></td>
+                        <!-- Tổng giá -->
+                        <td>
+    <span th:id="'cart-total-' + ${c.cartId}"
+          th:data-base-price="${c.price}"
+          th:data-duration="${c.duration}">
+        <span th:text="${
+            c.duration > 0
+                ? #numbers.formatDecimal(
+                    c.price * c.duration *
+                    (c.duration == 2 ? 0.9 : (c.duration == 3 ? 0.85 : 1)),
+                    0,'COMMA',0,'POINT'
+                  ) + ' đ'
+                : #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+        }"></span>
+    </span>
+                        </td>
+
+                        <!-- Handle -->
+                        <td>
+                            <button type="button"
+                                    class="btn btn-sm rounded-circle bg-light border"
+                                    th:attr="data-cart-id=${c.cartId}"
+                                    onclick="deleteCart(this)">
+                                <i class="fa fa-times text-danger"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h1 style="margin-top: 15px; font-size: 16px;color: red">
+                *Lưu ý: Tổng giá mỗi sản phẩm thuê = Giá gốc × Số tháng × (1 − % giảm)
+            </h1>
+            <h1 style="margin-top: 10px; font-size: 16px;color: red">
+                *Voucher chỉ áp dụng thanh toán đối với một sản phẩm
+            </h1>
+            <div class="row g-4 justify-content-end">
+                <div class="col-8"></div>
+                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                    <div class="bg-light rounded">
+                        <div class="p-4">
+                            <h1 class="display-6 mb-4">
+                                Cart <span class="fw-normal">Total</span>
+                            </h1>
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="mb-0 me-4">Selected:</h5>
+                                <p class="mb-0 fw-semibold" id="selectedTotal">0 đ</p>
+                            </div>
+
+                            <!-- VOUCHER -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0 me-4">Voucher:</h5>
+
+                                <div class="d-flex gap-2 flex-column" style="flex:1">
+
+                                    <div class="d-flex gap-2">
+                                        <input type="text"
+                                               id="voucherInput"
+                                               class="form-control form-control-sm"
+                                               placeholder="Nhập mã">
+
+                                        <input type="hidden" id="voucherPercent" value="0">
+                                        <input type="hidden" id="voucherHidden">
+
+                                        <button type="button"
+                                                class="btn btn-outline-dark btn-sm"
+                                                onclick="applyVoucher()">
+                                            Áp dụng
+                                        </button>
+                                    </div>
+
+                                    <small id="voucherMsg" class="d-none"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                            <h5 class="mb-0 ps-4 me-4">Total</h5>
+                            <p class="mb-0 pe-4 fw-semibold" id="finalTotal">0 đ</p>
+                        </div>
+                        <div id="checkoutError" class="alert alert-danger d-none"></div>
+                        <div id="checkoutSuccess" class="alert alert-success d-none"></div>
+                        <button id="checkoutBtn"
+                                type="button"
+                                class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4">
+                            Proceed Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* ======================
+       FORMAT TIỀN
+    ====================== */
+    function formatVND(num) {
+        return num.toLocaleString("vi-VN") + " đ";
+    }
+
+    /* ======================
+       LẤY CÁC ITEM ĐƯỢC CHỌN
+    ====================== */
+    function getSelectedItems() {
+        return document.querySelectorAll(".item-check:checked");
+    }
+
+    /* ======================
+       TÍNH TOTAL CART
+    ====================== */
+    function calculateCartTotal() {
+        let total = 0;
+
+        getSelectedItems().forEach(cb => {
+            const cartId = cb.value;
+            const totalSpan = document.getElementById(`cart-total-${cartId}`);
+            if (!totalSpan) return;
+
+            const price = parseInt(totalSpan.innerText.replace(/[^\d]/g, ""));
+            total += price || 0;
+        });
+
+        document.getElementById("selectedTotal").innerText = formatVND(total);
+
+        // Áp voucher nếu hợp lệ
+        const percent = parseInt(document.getElementById("voucherPercent").value || "0");
+        let finalTotal = total;
+
+        if (percent > 0 && getSelectedItems().length === 1) {
+            finalTotal = Math.round(total * (100 - percent) / 100);
+        }
+
+        document.getElementById("finalTotal").innerText = formatVND(finalTotal);
+    }
+
+    /* ======================
+       APPLY VOUCHER
+    ====================== */
+    function applyVoucher() {
+        const selectedItems = getSelectedItems();
+        const msgEl = document.getElementById("voucherMsg");
+
+        msgEl.classList.add("d-none");
+        msgEl.innerText = "";
+
+        // ❌ Chọn > 1 sản phẩm
+        if (selectedItems.length > 1) {
+            msgEl.innerText = "❌ Voucher chỉ áp dụng thanh toán 1 đơn hàng";
+            msgEl.className = "text-danger";
+            msgEl.classList.remove("d-none");
+
+            resetVoucher();
+            calculateCartTotal();
+
+            // ⏱️ ẨN SAU 3 GIÂY
+            setTimeout(() => {
+                msgEl.classList.add("d-none");
+                msgEl.innerText = "";
+            }, 3000);
+
+            return;
+        }
+        const code = document.getElementById("voucherInput").value.trim();
+        if (!code) return;
+
+        fetch(`/api/voucher/check?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.valid) {
+                    msgEl.innerText = "Voucher không hợp lệ hoặc đã hết hạn";
+                    msgEl.className = "text-danger";
+                    resetVoucher();
+                } else {
+                    document.getElementById("voucherPercent").value = data.value;
+                    document.getElementById("voucherHidden").value = code;
+
+                    msgEl.innerText = `🎉 Voucher giảm ${data.value}%`;
+                    msgEl.className = "text-success";
+                }
+
+                msgEl.classList.remove("d-none");
+                calculateCartTotal();
+            })
+            .catch(() => {
+                msgEl.innerText = "Vui lòng đăng nhập";
+                msgEl.className = "text-danger";
+                msgEl.classList.remove("d-none");
+            });
+    }
+    function resetVoucher() {
+        document.getElementById("voucherPercent").value = 0;
+        document.getElementById("voucherHidden").value = "";
+        document.getElementById("voucherInput").value = "";
+    }
+
+    /* ======================
+       ĐỔI GÓI THUÊ (AJAX)
+    ====================== */
+    function changeRentDuration(select) {
+        const cartId = select.dataset.cartId;
+        const duration = parseInt(select.value);
+        const basePrice = parseFloat(select.dataset.basePrice);
+
+        select.disabled = true;
+
+        fetch("/home/cart/update-duration", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `cartId=${cartId}&duration=${duration}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "Không thể cập nhật");
+                    return;
+                }
+
+                let discount = 1;
+                if (duration === 2) discount = 0.9;
+                if (duration === 3) discount = 0.85;
+
+                let total;
+                if (duration === 0) {
+                    total = Math.round(basePrice);
+                } else {
+                    total = Math.round(basePrice * duration * discount);
+                }
+
+                const totalSpan = document.getElementById(`cart-total-${cartId}`);
+                totalSpan.innerText = formatVND(total);
+
+                // đổi duration => reset voucher
+                resetVoucher();
+                calculateCartTotal();
+            })
+            .catch(() => alert("Lỗi kết nối server"))
+            .finally(() => select.disabled = false);
+    }
+
+    /* ======================
+       DOM READY
+    ====================== */
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.querySelectorAll(".item-check").forEach(cb => {
+            cb.addEventListener("change", () => {
+                resetVoucher();
+                calculateCartTotal();
+            });
+        });
+
+        // Check all
+        const checkAll = document.getElementById("checkAll");
+        if (checkAll) {
+            checkAll.addEventListener("change", () => {
+                document.querySelectorAll(".item-check").forEach(cb => {
+                    cb.checked = checkAll.checked;
+                });
+                resetVoucher();
+                calculateCartTotal();
+            });
+        }
+    });
+    /* ======================
+   SUBMIT CHECKOUT
+====================== */
+    document.getElementById("checkoutBtn")?.addEventListener("click", submitCheckout);
+
+    function submitCheckout() {
+        const selectedItems = getSelectedItems();
+
+        if (selectedItems.length === 0) {
+            alert("Vui lòng chọn ít nhất 1 account để thanh toán");
+            return;
+        }
+
+        //  LẤY DANH SÁCH CART ID ĐƯỢC CHỌN
+        const cartIds = Array.from(selectedItems)
+            .map(cb => cb.value)
+            .join(",");
+
+        //  CHỈ GỬI VOUCHER KHI CÒN ÁP DỤNG
+        let voucherCode = document.getElementById("voucherHidden").value || "";
+        const percent = parseInt(
+            document.getElementById("voucherPercent").value || "0"
+        );
+
+        if (percent === 0) {
+            voucherCode = "";
+        }
+
+        fetch("/home/cart/checkout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body:
+                `cartIds=${encodeURIComponent(cartIds)}&` +
+                `voucherCode=${encodeURIComponent(voucherCode)}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "Thanh toán thất bại");
+                    return;
+                }
+
+                alert("🎉 Thanh toán thành công");
+
+                // reload lại cart
+                window.location.reload();
+            })
+            .catch(() => {
+                alert("Vui lòng đăng nhập");
+            });
+    }
+
+</script>
+<script>
+    document.getElementById("voucherInput")?.addEventListener("input", () => {
+        const input = document.getElementById("voucherInput").value.trim();
+
+        // ❗ nếu user xoá voucher → reset state
+        if (input === "") {
+            resetVoucher();
+            calculateCartTotal();
+        }
+    });
+</script>
+
+<script>
+    function deleteCart(btn) {
+        const cartId = btn.getAttribute("data-cart-id");
+        if (!cartId) return;
+
+        if (!confirm("Xoá game này khỏi giỏ hàng?")) return;
+
+        fetch(`/home/cart/delete/${cartId}`, {
+            method: "POST"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                location.reload();
+            })
+            .catch(() => {
+                alert("Không thể xoá sản phẩm, vui lòng thử lại");
+            });
+    }
+</script>
+<script>
+    function showCheckoutError(msg) {
+        const box = document.getElementById("checkoutError");
+        box.innerText = msg;
+        box.classList.remove("d-none");
+
+        setTimeout(() => box.classList.add("d-none"), 4000);
+    }
+</script>
+
+<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <img th:src="@{/img/logoFinal.png}" style="width:130px;" class="mb-3">
+                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
+                <p>
+                    Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>
+                    Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.
+                </p>
+                <div class="d-flex mt-3 gap-3">
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
+                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
+                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
+                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
+                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
+                </button>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
+                <ul class="footer-links">
+                    <li><a th:href="@{/home}"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
+            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/lib/wow/wow.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+            if (!isLogged) {
+                e.preventDefault();
+                const alertBox = document.getElementById('loginAlert');
+                alertBox.classList.remove('d-none');
+                setTimeout(() => alertBox.classList.add('d-none'), 3000);
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("/login", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const err = await res.json();
+                    const errorBox = document.getElementById("loginError");
+                    errorBox.textContent = err.error;
+                    errorBox.classList.remove("d-none");
+                    setTimeout(() => errorBox.classList.add("d-none"), 3000);
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data?.redirect) window.location.href = data.redirect;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const loginModalEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                    registerModal.show();
+                });
+                loginModal.hide();
+            });
+        });
+
+        document.querySelectorAll(".open-login").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const registerModalEl = document.getElementById("registerModal");
+                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
+                });
+                registerModal.hide();
+            });
+        });
+    });
+</script>
+
+<script>
+    document.querySelectorAll(".open-register").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const loginEl = document.getElementById("loginModal");
+            const loginModal = bootstrap.Modal.getInstance(loginEl);
+
+            loginEl.addEventListener("hidden.bs.modal", function handler() {
+                loginEl.removeEventListener("hidden.bs.modal", handler);
+                const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                registerModal.show();
+            });
+
+            loginModal.hide();
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.search.includes("error=true")) {
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        }
+    });
+</script>
+
+<script th:if="${openRegister}">
+    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+    registerModal.show();
+</script>
+
+<script>
+    document.getElementById("registerBtn").addEventListener("click", function () {
+        const formData = new FormData(document.getElementById("registerForm"));
+        fetch("/register", {
+            method: "POST",
+            body: new URLSearchParams(formData),
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const errorDiv = document.getElementById("registerError");
+                const successDiv = document.getElementById("registerSuccess");
+
+                if (data.error) {
+                    errorDiv.innerText = data.error;
+                    successDiv.innerText = "";
+                    document.getElementById("registerPassword").value = "";
+                    document.getElementById("confirmPassword").value = "";
+                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                } else if (data.success) {
+                    successDiv.innerText = data.success;
+                    errorDiv.innerText = "";
+                    document.getElementById("registerForm").reset();
+                    setTimeout(() => { successDiv.innerText = ""; }, 3000);
+                }
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+<script>
+    setTimeout(() => {
+        const spinner = document.getElementById("spinner");
+        if (spinner) spinner.classList.remove("show");
+    }, 500);
+</script>
+
+<script>
+    new Swiper(".mySwiper1", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: { el: ".mySwiper1 .swiper-pagination", clickable: true }
+    });
+
+    new Swiper(".mySwiper2", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: { el: ".mySwiper2 .swiper-pagination", clickable: true }
+    });
+</script>
+
+<script th:src="@{/js/product.js}"></script>
+</body>
+</html>

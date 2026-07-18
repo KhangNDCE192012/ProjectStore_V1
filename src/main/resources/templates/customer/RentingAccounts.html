@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách tài khoản đang thuê</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Card tổng thể */
+        .card-soft {
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Header danh sách */
+        .card-body .d-flex h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-body .d-flex .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.8em;
+        }
+
+        /* Table */
+        .rent-table {
+            margin-bottom: 0;
+        }
+
+        .rent-table th, .rent-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .rent-table th {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .rent-table td {
+            font-size: 0.875rem;
+        }
+
+        .rent-table td .fw-semibold {
+            font-weight: 600;
+        }
+
+        .rent-table td .text-muted {
+            font-size: 0.8rem;
+        }
+
+        /* Badge trạng thái */
+        .rent-table .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.6em;
+        }
+
+        /* Nút info và gia hạn */
+        .btn-info-account, .btn-outline-warning {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+        }
+
+        /* Form gia hạn */
+        .collapse .p-3 {
+            background-color: #f8f9fa;
+            border-radius: 0.75rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .collapse form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .collapse form .form-select {
+            min-width: 140px;
+        }
+
+        .collapse form button {
+            white-space: nowrap;
+        }
+
+        /* Responsive: nhỏ hơn 576px */
+        @media (max-width: 575.98px) {
+            .rent-table th, .rent-table td {
+                font-size: 0.8rem;
+            }
+
+            .collapse form {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .collapse form .form-select,
+            .collapse form button {
+                width: 100%;
+            }
+        }
+
+        body {
+            background: #f5f7fa;
+        }
+
+        .game-nav {
+            background: pink;
+            border-top: 2px solid #e6d8c8;
+            height: 86px;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-nav .container-fluid {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo {
+            height: 180px;
+            width: auto;
+        }
+
+        .nav-center {
+            gap: 26px;
+        }
+
+        .game-nav .navbar-nav .nav-link {
+            color: #111 !important;
+            font-weight: 500;
+        }
+
+        .nav-pill {
+            background: transparent;
+            color: #000 !important;
+            border: 1px solid transparent;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+            border-radius: 18px !important;
+            padding: 10px 18px !important;
+        }
+
+        .nav-pill:hover {
+            color: #f7931e !important;
+            background: #F8F8FF;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+            transform: none !important;
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            background: #f5e6d7 !important;
+            color: #000 !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+        }
+
+        .dropdown-soft {
+            border-radius: 14px;
+            padding: 6px;
+        }
+
+        .page-header {
+            background: #2a3f54;
+            color: #fff;
+            padding: 26px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar & Hero Start -->
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-pill" href="/home">
+                        <i class="fa fa-home me-2"></i>Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-list me-2"></i>Tài khoản vĩnh viễn
+                    </a>
+                    <ul class="dropdown-menu dropdown-soft">
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='AOV')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                AOV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='FREE FIRE')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                Free Fire
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/renting}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/transaction}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-credit-card me-2"></i>Ví
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item"
+                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
+        .game-nav .container-fluid{display:flex;align-items:center}
+        .nav-logo{height:180px;width:auto}
+        .nav-center{gap:26px}
+        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
+        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
+        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
+        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
+        .dropdown-soft{border-radius:14px;padding:6px}
+        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
+        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+    </style>
+</nav>
+
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+        alertBox.classList.remove('d-none');
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
+
+<!-- Navbar & Hero End -->
+
+<div class="page-header">
+    <div class="container">
+        <h3 class="mb-0">Tài khoản đang thuê</h3>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Ví dụ hiển thị thông báo -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" id="flashMessage">
+        <span th:text="${successMessage}"></span>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" id="flashMessage">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <div class="card card-soft">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="mb-0">Danh sách</h5>
+                <span class="badge bg-primary rounded-pill px-3"
+                      th:text="${rentList != null ? #lists.size(rentList) : 0} + ' item(s)'">
+                </span>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle rent-table">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th>Account</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Status</th>
+                        <th>.</th>
+                        <th>Price</th>
+                        <th class="text-center">Info</th>
+                        <th style="width:220px;" class="text-center">Action</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <!-- EMPTY -->
+                    <tr th:if="${rentList == null || #lists.isEmpty(rentList)}">
+                        <td colspan="10" class="text-center py-4 text-muted">
+                            Bạn chưa thuê tài khoản nào.
+                        </td>
+                    </tr>
+
+                    <!-- DATA -->
+                    <tr th:each="r, i : ${rentList}">
+                        <!-- # -->
+                        <td th:text="${i.index + 1}"></td>
+
+                        <!-- ACCOUNT -->
+                        <td>
+                            <div class="fw-semibold"
+                                 th:text="${r.gameAccount != null ? r.gameAccount.gameAccount : 'N/A'}"></div>
+                            <div class="text-muted small"
+                                 th:text="${r.gameAccount?.game?.gameName}">
+                            </div>
+                        </td>
+
+                        <!-- START -->
+                        <td th:text="${r.dateStart != null ? #temporals.format(r.dateStart,'dd/MM/yyyy HH:mm') : '—'}"></td>
+
+                        <!-- END -->
+                        <td th:text="${r.dateEnd != null ? #temporals.format(r.dateEnd,'dd/MM/yyyy HH:mm') : '—'}"></td>
+
+                        <!-- STATUS -->
+                        <td>
+            <span class="badge bg-success"
+                  th:if="${r.status == 'ACTIVE' || r.status == 'IN USE'}"
+                  th:text="${r.status}"></span>
+                            <span class="badge bg-secondary"
+                                  th:if="${r.status != 'ACTIVE' && r.status != 'IN USE'}"
+                                  th:text="${r.status ?: 'UNKNOWN'}"></span>
+                        </td>
+
+                        <!-- TYPE -->
+                        <td th:text="${r.deception ?: ''}"></td>
+
+                        <!-- BASE PRICE -->
+                        <td>
+            <span class="badge bg-secondary base-price"
+                  th:data-price="${r.gameAccount.price}"
+                  th:text="${r.gameAccount.price}">
+            </span>
+                        </td>
+                        <!-- INFO -->
+                        <td class="text-center">
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm rounded-pill btn-info-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#gaModal"
+                                    th:data-username="${r.gameAccount.gameAccount}"
+                                    th:data-password="${r.gameAccount.gamePassword}"
+                                    th:data-game="${r.gameAccount.game.gameName}"
+                                    th:data-rank="${r.gameAccount.rank}"
+                                    th:data-skin="${r.gameAccount.skin}"
+                                    th:data-level="${r.gameAccount.lovel}"
+                                    th:data-vip="${r.gameAccount.vip}"
+                                    th:data-price="${r.gameAccount.price}"
+                                    th:data-description="${r.gameAccount.description}">
+                                <i class="bi bi-info-circle"></i>
+                            </button>
+                        </td>
+                        <!-- ACTION -->
+                        <td class="text-center">
+                            <button class="btn btn-outline-warning btn-sm rounded-pill px-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    th:attr="data-bs-target='#renew'+${r.id}">
+                                <i class="bi bi-arrow-repeat me-1"></i> Gia hạn
+                            </button>
+
+                            <div class="collapse mt-3" th:id="'renew'+${r.id}">
+                                <div class="p-3 border rounded-3 bg-light text-start">
+                                    <form th:action="@{/home/renting/renew}" method="post">
+                                        <input type="hidden" name="rentGameId" th:value="${r.id}">
+                                        <input type="hidden" th:if="${_csrf != null}"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
+
+                                        <!-- CHỌN THÁNG -->
+                                        <label class="small fw-semibold mb-1">⏱ Thời gian thuê</label>
+                                        <select name="months"
+                                                class="form-select form-select-sm rent-month-select mb-2"
+                                                required
+                                                th:data-rent-id="${r.id}"
+                                                th:data-base-price="${r.gameAccount.price}">
+                                            <option value="" disabled selected>Chọn tháng</option>
+                                            <option value="1">1 tháng</option>
+                                            <option value="2">2 tháng (-10%)</option>
+                                            <option value="3">3 tháng (-15%)</option>
+                                        </select>
+
+                                        <!-- THÀNH TIỀN -->
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-semibold">Total:</span>
+                                            <span class="fw-bold text-primary fs-5 total-price"
+                                                  th:id="'totalPrice'+${r.id}"
+                                                  th:text="${r.gameAccount.price}">
+                    </span>
+                                        </div>
+                                        <button type="submit"
+                                                class="btn btn-primary btn-sm rounded-pill w-100">
+                                            <i class="bi bi-credit-card me-1"></i> Thanh toán
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <h1 style="margin-top: 20px; font-size: 16px;color: red">
+        *Lưu ý: Giá gói gia hạn mỗi sản phẩm thuê = Giá gốc × Số tháng × (1 − % giảm)
+    </h1>
+</div>
+<div class="modal fade" id="gaModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <td class="fw-bold">Game</td>
+                        <td id="mGame"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Username</td>
+                        <td id="mUsername"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Password</td>
+                        <td id="mPassword"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Rank</td>
+                        <td id="mRank"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Skin</td>
+                        <td id="mSkin"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Level</td>
+                        <td id="mLevel"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">VIP</td>
+                        <td id="mVip"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Price</td>
+                        <td id="mPrice"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Description</td>
+                        <td id="mDesc"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.querySelectorAll(".rent-month-select").forEach(select => {
+
+            select.addEventListener("change", function () {
+                const months = parseInt(this.value);
+                const basePrice = parseFloat(this.dataset.basePrice);
+                const rentId = this.dataset.rentId;
+
+                if (!months || !basePrice) return;
+
+                let total = basePrice * months;
+
+                // giảm giá
+                if (months === 2) total *= 0.9;
+                if (months === 3) total *= 0.85;
+
+                total = Math.round(total);
+
+                const totalEl = document.getElementById("totalPrice" + rentId);
+                if (totalEl) {
+                    totalEl.innerText = total.toLocaleString("vi-VN") + " ₫";
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.btn-info-account').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('mGame').innerText = btn.dataset.game || '—';
+                document.getElementById('mUsername').innerText = btn.dataset.username || '—';
+                document.getElementById('mPassword').innerText = btn.dataset.password || '—';
+                document.getElementById('mRank').innerText = btn.dataset.rank || '—';
+                document.getElementById('mSkin').innerText = btn.dataset.skin || '0';
+                document.getElementById('mLevel').innerText = btn.dataset.level || '0';
+                document.getElementById('mVip').innerText = btn.dataset.vip || '0';
+                document.getElementById('mPrice').innerText = btn.dataset.price || '0';
+                document.getElementById('mDesc').innerText = btn.dataset.description || '—';
+            });
+        });
+    });
+</script>
+<script>
+    // Ẩn thông báo sau 3 giây
+    window.addEventListener('DOMContentLoaded', () => {
+        const flash = document.getElementById('flashMessage');
+        if (flash) {
+            setTimeout(() => {
+                flash.style.display = 'none';
+            }, 3000); // 3000ms = 3s
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+            if (!isLogged) {
+                e.preventDefault();
+                const alertBox = document.getElementById('loginAlert');
+                alertBox.classList.remove('d-none');
+                setTimeout(() => alertBox.classList.add('d-none'), 3000);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

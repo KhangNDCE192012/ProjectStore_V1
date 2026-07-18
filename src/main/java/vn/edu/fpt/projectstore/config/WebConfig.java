@@ -1,0 +1,25 @@
+package vn.edu.fpt.projectstore.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+        String os = System.getProperty("os.name").toLowerCase();
+        String path;
+
+        if (os.contains("win")) {
+            path = "file:D:/img/";
+        } else {
+            path = "file:/home/urantune/Documents/img/";
+        }
+
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations(path);
+    }
+}
