@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.Customer;
-import webBackEnd.service.CustomerService;
+import vn.edu.fpt.projectstore.entity.Customer;
+import vn.edu.fpt.projectstore.service.CustomerService;
 
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
